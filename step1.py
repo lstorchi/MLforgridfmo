@@ -1,6 +1,19 @@
 import pandas as pd
 import sys
 
+#######################################################################
+
+def intersection(lst1, lst2): 
+    lst3 = [value for value in lst1 if value in lst2] 
+    return lst3 
+
+#######################################################################
+
+def difference(lst1, lst2):
+    return list(set(lst1) - set(lst2))
+
+#######################################################################
+
 filename = ""
 
 if len(sys.argv) != 2:
@@ -26,6 +39,9 @@ for name in xls.sheet_names:
     else:
         localnames = list(df[ft[0]].values)
         if len(names) != len(localnames):
-                print("  set of names is different")
-                exit(1)
+            print("  set of names is different ")
+            print("  ", len(names) , " vs ", len(localnames))
+            print("  ", difference(localnames, names))
+            print("  ", difference(names, localnames))
+            exit(1)
 
