@@ -11,12 +11,21 @@ else:
 
 xls = pd.ExcelFile(filename)
 
+names = []
 features = []
 
+thefirst = True
 for name in xls.sheet_names:
     print ("Parsing data from ", name)
     df = xls.parse(name)
     ft = list(df.columns.values)
     print("  reading names from ", ft[0])
-    print(df[ft[0]].values)
+    if thefirst:
+        names = list(df[ft[0]].values)
+        thefirst = False
+    else:
+        localnames = list(df[ft[0]].values)
+        if len(names) != len(localnames):
+                print("  set of names is different")
+                exit(1)
 
