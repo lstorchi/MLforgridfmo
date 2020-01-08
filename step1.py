@@ -118,11 +118,11 @@ if __name__== "__main__":
                 #K = scipy.stats.kendalltau(features[k1], features[k2])[0]
                 
                 if abs(P) > 0.5 or abs(S) > 0.5:
-                    print ("\"",k1, "\" vs \"", k2, "\" corr P,S: ", P, S)
+                    print ("\"",k1, "\" vs \"", k2, "\" corr P and S: , ", P, " , ", S)
 
     for k in features:
         P = scipy.stats.pearsonr(features[k], labels)[0]
         S = scipy.stats.spearmanr(features[k], labels)[0]
 
         if abs(P) > 0.5 or abs(S) > 0.5:
-            print ("\"",k, "\" vs ", labelname, " corr P,S: ", P, S)
+            print ("\"",k, "\" vs ", labelname, " corr P and S: , ", P, " , ", S)
