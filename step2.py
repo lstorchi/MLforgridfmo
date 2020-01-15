@@ -136,17 +136,13 @@ if __name__== "__main__":
         for iter in range(NUM_ITER):
             km = KMeans(
                 n_clusters=NUMOFCLUSTER, init=cents,
-                n_init=1, max_iter=300,
-                tol=1e-04)
+                n_init=1)
             km.fit(features_array)
             cents = km.cluster_centers_
             print('Iteration: ', iter)
             print('Centroids:', km.cluster_centers_)
 
- 
 
-        
-
-
-
+        for i in range(len(labels)):
+            print (names[i], " , " , km.labels_[i], " , ", labels[i])
 
