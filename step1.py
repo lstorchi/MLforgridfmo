@@ -40,8 +40,11 @@ if __name__== "__main__":
         features[k] = features[k] - m
         features[k] = features[k] / d
 
-    for k1 in features:
-        for k2 in features:
+    for idxk1 in range(len(features.keys())):
+        for idxk2 in range(idxk1+1, len(features.keys())):
+
+            k1 = list(features.keys())[idxk1]
+            k2 = list(features.keys())[idxk2]
             if k1 != k2:
                 P = scipy.stats.pearsonr(features[k1], features[k2])[0]
                 S = scipy.stats.spearmanr(features[k1], features[k2])[0]
@@ -49,10 +52,11 @@ if __name__== "__main__":
                 
                 if abs(P) > 0.5 or abs(S) > 0.5:
                     print ("\"",k1, "\" vs \"", k2, "\" corr P and S: , ", P, " , ", S)
+                    basename  = (k1 + "_" + k2).replace(" ", "_")
                     plt.xlabel(k1)
                     plt.ylabel(k2)
                     plt.scatter(features[k1], features[k2], alpha=0.5)
-                    plt.savefig((k1 + "_" + k2 +".png").replace(" ", "_"))
+                    plt.savefig(basename+".png")
                     plt.close()
 
     for k in features:
@@ -61,3 +65,9 @@ if __name__== "__main__":
 
         if abs(P) > 0.5 or abs(S) > 0.5:
             print ("\"",k, "\" vs ", labelname, " corr P and S: , ", P, " , ", S)
+            plt.xlabel(k)
+            plt.ylabel(labelname)
+            plt.scatter(features[k], labels, alpha=0.5)
+            basename  = (k + "_" + labelname).replace(" ", "_")
+            plt.savefig(basename+".png")
+            plt.close()
