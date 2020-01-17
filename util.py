@@ -74,3 +74,29 @@ def readfile(filename, labelname):
     return names, features, labels
 
 #######################################################################
+
+def extract_featuresubset (features, featuresselected):
+
+    somemissing = False
+    for k in featuresselected:
+        if k not in features:
+            #print ("Error cannot find ", k)
+            somemissing = True
+
+    if not somemissing:
+        #print("All the features have been found")
+
+        toberemoved = []
+
+        for allf in features:
+            if allf not in featuresselected:
+                toberemoved.append(allf)
+
+        for ftorm in toberemoved:
+            del features[ftorm]
+
+        return True
+
+    return False
+
+#######################################################################

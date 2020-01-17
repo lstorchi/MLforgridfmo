@@ -42,23 +42,9 @@ if __name__== "__main__":
     else:
         print("file ", filename , " does not exist ")
 
-    somemissing = False
-    for k in featuresselected:
-        if k not in features:
-            print ("Error cannot find ", k)
-            somemissing = True
+    if util.extract_featuresubset (features, featuresselected):
 
-    if not somemissing:
         print("All the features have been found")
-
-        toberemoved = []
-
-        for allf in features:
-            if allf not in featuresselected:
-                toberemoved.append(allf)
-
-        for ftorm in toberemoved:
-            del features[ftorm]
 
         for k in features:
             m = np.mean(features[k])
@@ -122,7 +108,7 @@ if __name__== "__main__":
         plt.savefig("elbow_distorsion_vs_numofcluster.png")
 
         # set number of cluster to 4
-        NUMOFCLUSTER = 4
+        NUMOFCLUSTER = 3
         NUM_ITER = 20
 
         km = KMeans(
@@ -141,8 +127,16 @@ if __name__== "__main__":
             cents = km.cluster_centers_
             print('Iteration: ', iter)
             print('Centroids:', km.cluster_centers_)
-
+        
+        valuespercluster = {}
+        for i in range(0, NUMOFCLUSTER):
+            valuespercluster[i] = []
 
         for i in range(len(labels)):
+            valuespercluster[km.labels_[i]].append(labels[i])
             print (names[i], " , " , km.labels_[i], " , ", labels[i])
+
+        for i in range(0, NUMOFCLUSTER):
+            print("Cluster ", i, " ", np.mean(valuespercluster[i]), " STD ", 
+                    np.std(valuespercluster[i]))
 
