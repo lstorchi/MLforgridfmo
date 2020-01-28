@@ -25,7 +25,8 @@ def rf_split_build_and_test (features_array, labels):
      X_train, X_test, y_train, y_test = train_test_split( \
              features_array, labels, test_size=0.10)
      
-     regressor = DecisionTreeRegressor(random_state = 0)  
+     #regressor = DecisionTreeRegressor(random_state = 0)  
+     regressor = DecisionTreeRegressor()
        
      # fit the regressor with X and Y data 
      regressor.fit(X_train, y_train) 
