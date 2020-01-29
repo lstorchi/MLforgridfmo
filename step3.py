@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_absolute_error
 from sklearn.tree import DecisionTreeRegressor  
@@ -25,6 +26,38 @@ LEAVEPERC = 0.15
 
 #####################################################################
 
+def lr_split_build_and_test (features_array, labels, \
+        numofdecisiontree = 10):
+
+    X_train, X_test, y_train, y_test = train_test_split( \
+            features_array, labels, test_size=LEAVEPERC)
+    
+    regressor = LinearRegression()
+      
+    # fit the regressor with X and Y data 
+    regressor.fit(X_train, y_train) 
+    
+    y_pred = regressor.predict(X_test) 
+    
+    rms = math.sqrt(mean_squared_error(y_test, y_pred))
+    mae = mean_absolute_error(y_test, y_pred)
+    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
+    maxae = np.amax(absdiff)
+    rp = pearsonr(y_test, y_pred)[0]
+
+    y_pred = regressor.predict(X_train) 
+    
+    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
+    maetrain = mean_absolute_error(y_train, y_pred)
+    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
+    maxaetrain = np.amax(absdiff)
+    rptrain = pearsonr(y_train, y_pred)[0]
+
+    return (rms, mae, maxae, rp), \
+            (rmstrain, maetrain, maxaetrain, rptrain)
+
+#####################################################################
+
 def rf_split_build_and_test (features_array, labels, \
         numofdecisiontree = 10):
 
@@ -39,18 +72,22 @@ def rf_split_build_and_test (features_array, labels, \
     
     y_pred = regressor.predict(X_test) 
     
-    #for i in range(y_pred.shape[0]):
-    #    print(y_pred[i], " ", y_test[i])
-    
     rms = math.sqrt(mean_squared_error(y_test, y_pred))
     mae = mean_absolute_error(y_test, y_pred)
     absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
     maxae = np.amax(absdiff)
-
     rp = pearsonr(y_test, y_pred)[0]
 
-    return rms, mae, maxae, rp, y_test, y_pred
+    y_pred = regressor.predict(X_train) 
+    
+    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
+    maetrain = mean_absolute_error(y_train, y_pred)
+    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
+    maxaetrain = np.amax(absdiff)
+    rptrain = pearsonr(y_train, y_pred)[0]
 
+    return (rms, mae, maxae, rp), \
+            (rmstrain, maetrain, maxaetrain, rptrain)
 
 #####################################################################
 
@@ -67,17 +104,23 @@ def rt_split_build_and_test (features_array, labels):
     
     y_pred = regressor.predict(X_test) 
     
-    #for i in range(y_pred.shape[0]):
-    #    print(y_pred[i], " ", y_test[i])
-    
     rms = math.sqrt(mean_squared_error(y_test, y_pred))
     mae = mean_absolute_error(y_test, y_pred)
     absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
     maxae = np.amax(absdiff)
-
     rp = pearsonr(y_test, y_pred)[0]
 
-    return rms, mae, maxae, rp, y_test, y_pred
+    y_pred = regressor.predict(X_train) 
+    
+    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
+    maetrain = mean_absolute_error(y_train, y_pred)
+    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
+    maxaetrain = np.amax(absdiff)
+    rptrain = pearsonr(y_train, y_pred)[0]
+
+
+    return (rms, mae, maxae, rp), \
+            (rmstrain, maetrain, maxaetrain, rptrain)
 
 #####################################################################
 
@@ -102,17 +145,23 @@ def krr_split_build_and_test (features_array, labels, \
     
     y_pred = regressor.predict(X_test) 
     
-    #for i in range(y_pred.shape[0]):
-    #    print(y_pred[i], " ", y_test[i])
-    
     rms = math.sqrt(mean_squared_error(y_test, y_pred))
     mae = mean_absolute_error(y_test, y_pred)
     absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
     maxae = np.amax(absdiff)
-
     rp = pearsonr(y_test, y_pred)[0]
 
-    return rms, mae, maxae, rp, y_test, y_pred
+    y_pred = regressor.predict(X_train) 
+    
+    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
+    maetrain = mean_absolute_error(y_train, y_pred)
+    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
+    maxaetrain = np.amax(absdiff)
+    rptrain = pearsonr(y_train, y_pred)[0]
+
+
+    return (rms, mae, maxae, rp), \
+            (rmstrain, maetrain, maxaetrain, rptrain)
 
 #####################################################################
 
@@ -139,7 +188,8 @@ if __name__== "__main__":
     method = 0
 
     if len(sys.argv) != 3:
-        print("usage: " , sys.argv[0] , " file.xslx method=[1=rtree,2=krr,3=rforest]")
+        print("usage: " , sys.argv[0] , \
+                " file.xslx method=[1=rtree,2=krr,3=rforest,4=LinearRegression]")
         exit(1)
     else:
         filename = sys.argv[1]
@@ -155,7 +205,8 @@ if __name__== "__main__":
             "LvsP 5 A nomalized", \
             "FvsF 5 A nomalized" , \
             "Ligand rotors", \
-            "Ligand charge"]
+            "Ligand charge" \
+            ]
 
     names = []
     features = {}
@@ -198,6 +249,12 @@ if __name__== "__main__":
         mean_mae = 0.0
         mean_maxae = 0.0
         mean_rp = 0.0
+
+        mean_rms_train = 0.0
+        mean_mae_train = 0.0
+        mean_maxae_train = 0.0
+        mean_rp_train = 0.0
+
         num_of_run = 200
 
         grid = (krr_param_selection (features_array, labels, 5))
@@ -207,34 +264,42 @@ if __name__== "__main__":
 
         for i in range(num_of_run):
 
-            rms = 0.0
-            mae = 0.0  
-            maxae = 0.0
-            rp = 0.0
+            test = None
+            train = None
 
             if method == 1:
-                rms, mae, maxae, rp, y_pred, y_test = \
+                test, train = \
                     rt_split_build_and_test (features_array, labels)
             elif method == 2:
-                rms, mae, maxae, rp, y_pred, y_test = \
+                test, train = \
                     krr_split_build_and_test (features_array, labels, \
                     params["alpha"], params["gamma"])
             elif method == 3:
-                rms, mae, maxae, rp, y_pred, y_test = \
-                   rf_split_build_and_test (features_array, labels, 
+                test, train = \
+                        rf_split_build_and_test (features_array, labels, 
                            20)
-           
-           #print (" RMSE: ", rms)
-           #print ("  MAE: ", mae)
-           #print ("MaxAE: ", maxae)
+            elif method == 4:
+                test, train = \
+                        lr_split_build_and_test (features_array, labels)
 
-            mean_rms += rms
-            mean_mae += mae
-            mean_maxae += maxae
-            mean_rp += rp
+            mean_rms += test[0] 
+            mean_mae += test[1]
+            mean_maxae += test[2]
+            mean_rp += test[3]
+           
+            mean_rms_train += train[0] 
+            mean_mae_train += train[1]
+            mean_maxae_train += train[2]
+            mean_rp_train += train[3]
 
         print ("Mean  RMSE: %10.5f"%(mean_rms/float(num_of_run)) )
         print ("Mean   MAE: %10.5f"%(mean_mae/float(num_of_run)) )
         print ("Mean MaxAE: %10.5f"%(mean_maxae/float(num_of_run)) )
         print ("Mean    rP: %10.5f"%(mean_rp/float(num_of_run)) )
+
+        print ("Mean  RMSE train: %10.5f"%(mean_rms_train/float(num_of_run)) )
+        print ("Mean   MAE train: %10.5f"%(mean_mae_train/float(num_of_run)) )
+        print ("Mean MaxAE train: %10.5f"%(mean_maxae_train/float(num_of_run)) )
+        print ("Mean    rP train: %10.5f"%(mean_rp_train/float(num_of_run)) )
+
 
