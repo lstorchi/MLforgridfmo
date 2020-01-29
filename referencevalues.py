@@ -13,9 +13,6 @@ from sklearn.metrics import mean_absolute_error
 
 from scipy.stats import pearsonr
 
-
-
-
 boston=load_boston()
 boston_df=pd.DataFrame(boston.data,columns=boston.feature_names)
 boston_df['Price']=boston.target
@@ -131,12 +128,12 @@ print("  Mean    MAE train: %10.5f"%(lrmaetrain))
 print("  Mean  MaxAE train: %10.5f"%(lrmaxaetrain))
 print("  Mean     rP train: %10.5f"%(lrrptrain))
 
-#plt.plot(rr.coef_,alpha=0.7,linestyle='none',marker='*',markersize=5,color='red',label=r'Ridge; $\alpha = 0.01$',zorder=7) # zorder for ordering the markers
-#plt.plot(rr100.coef_,alpha=0.5,linestyle='none',marker='d',markersize=6,color='blue',label=r'Ridge; $\alpha = 100$') # alpha here is for transparency
-#plt.plot(lr.coef_,alpha=0.4,linestyle='none',marker='o',markersize=7,color='green',label='Linear Regression')
-#plt.xlabel('Coefficient Index',fontsize=16)
-#plt.ylabel('Coefficient Magnitude',fontsize=16)
-#plt.legend(fontsize=13,loc=4)
-#plt.show()
+plt.plot(rr.coef_,alpha=0.7,linestyle='none',marker='*',markersize=5,color='red',label=r'Ridge; $\alpha = 0.01$',zorder=7) # zorder for ordering the markers
+plt.plot(rr100.coef_,alpha=0.5,linestyle='none',marker='d',markersize=6,color='blue',label=r'Ridge; $\alpha = 100$') # alpha here is for transparency
+plt.plot(lr.coef_,alpha=0.4,linestyle='none',marker='o',markersize=7,color='green',label='Linear Regression')
+plt.xlabel('Coefficient Index',fontsize=16)
+plt.ylabel('Coefficient Magnitude',fontsize=16)
+plt.legend(fontsize=13,loc=4)
+plt.show()
 
 
