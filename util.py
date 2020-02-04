@@ -15,7 +15,7 @@ def difference(lst1, lst2):
 
 #######################################################################
 
-def readfile(filename, labelname):
+def readfile(filename, labelname, verbose = True):
 
     xls = pd.ExcelFile(filename)
 
@@ -25,10 +25,12 @@ def readfile(filename, labelname):
 
     thefirst = True
     for name in xls.sheet_names:
-        print ("Parsing data from ", name)
+        if verbose:
+            print ("Parsing data from ", name)
         df = xls.parse(name)
         ft = list(df.columns.values)
-        print("  reading names from ", ft[0])
+        if verbose:
+            print("  reading names from ", ft[0])
 
         morethen = []
         if thefirst:
@@ -42,7 +44,8 @@ def readfile(filename, labelname):
                 lessthen = difference(names, localnames)
 
                 if len(morethen):
-                    print("    WARNING has more entries ", morethen, " I will drop it")
+                    if verbose:
+                        print("    WARNING has more entries ", morethen, " I will drop it")
                 elif len(lessthen):
                     print("    ERROR has less entries ", lessthen)
                     exit(1)

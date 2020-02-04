@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler
 
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from sklearn.decomposition import PCA
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -58,9 +59,14 @@ if __name__== "__main__":
     labels = []
 
     if os.path.exists(filename):
-        names, features, labels = util.readfile(filename, labelname)
+        names, features, labels = util.readfile(filename, labelname, False)
     else:
         print("file ", filename , " does not exist ")
+
+
+    featuresselected.clear()
+    for k in features.keys():
+        featuresselected.append(k)
 
     if util.extract_featuresubset (features, featuresselected):
 
@@ -70,7 +76,7 @@ if __name__== "__main__":
             m = np.mean(features[k])
             d = np.std(features[k])
 
-            print(k, " has mean: ", m, " and STD: ", d)
+            print("%30s"%k, " has mean: %10.5f"%m, " and STD: %10.5f"%d)
 
         m = np.mean(labels)
         d = np.std(labels)
@@ -88,12 +94,56 @@ if __name__== "__main__":
 
         features_array = StandardScaler().fit_transform(features_array)
 
+        print("")
+        print("Standardize features...")
         i = 0
         for k in features:
             m = np.mean(features_array[:, i])
             d = np.std(features_array[:, i])
 
-            print("Label ", labelname, " has new mean: ", m, " and STD: ", d)
+            #print("Label ", labelname, " has new mean: %10.5f"%m, " and STD: %10.5f"%d)
  
             i = i + 1
+
+        print("")
+        print ("Features selection using ", features_array.shape[0], \
+                " observations and ", features_array.shape[1], " features ")
+
+        #pca = PCA()
+        #principalComponents = pca.fit_transform(features_array)
+
+        #plt.figure()
+        #plt.plot(np.cumsum(pca.explained_variance_ratio_))
+        #plt.xlabel('Number of Components')
+        #plt.ylabel('Variance (%)') #for each component
+        #plt.show()
+
+        pca = PCA(0.95)
+        principalComponents = pca.fit_transform(features_array)
+
+        print("Number of components: ", pca.n_components_)
+        print("  Explained variance: ")
+        i = 1
+        N = pca.n_components_
+        selectedvariables = {}
+
+        for v in pca.explained_variance_ratio_ :
+            print("     PC%3d %10.5f"%(i, v*100.0))
+            arr = np.array(abs(pca.components_[i-1]))
+            for f in arr.argsort()[-N:][::-1]:
+                print("       %3d ==> [%10.5f] %30s"%(f, \
+                        arr[f], featuresselected[f]))
+
+                if featuresselected[f] in selectedvariables:
+                    selectedvariables[featuresselected[f]] += 1
+                else:
+                    selectedvariables[featuresselected[f]] = 1
+
+            i = i + 1
+
+        print("")
+        print("Most important variables are: ")
+        for v in selectedvariables.keys():
+            print("  %30s ==> %5d"%(v, selectedvariables[v]))
+        print("")
 
