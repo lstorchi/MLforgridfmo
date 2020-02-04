@@ -1,20 +1,12 @@
+
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import mean_absolute_error
-from sklearn.tree import DecisionTreeRegressor  
-from sklearn.metrics import mean_squared_error
-from sklearn.kernel_ridge import KernelRidge
-from sklearn.linear_model import Ridge
-from sklearn.linear_model import Lasso
-from sklearn.cluster import KMeans
-
-from scipy.stats import pearsonr
-
 from sklearn.feature_selection import SelectKBest
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
+from sklearn.kernel_ridge import KernelRidge
 from sklearn.feature_selection import chi2
+from sklearn.linear_model import Lasso
+
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -27,196 +19,6 @@ import sys
 import math
 
 import util
-
-LEAVEPERC = 0.15
-
-#####################################################################
-
-def rr_split_build_and_test (features_array, labels, \
-        alpha = 0.1):
-
-    X_train, X_test, y_train, y_test = train_test_split( \
-            features_array, labels, test_size=LEAVEPERC)
-    
-    regressor = Ridge()
-      
-    # fit the regressor with X and Y data 
-    regressor.fit(X_train, y_train) 
-    
-    y_pred = regressor.predict(X_test) 
-    
-    rms = math.sqrt(mean_squared_error(y_test, y_pred))
-    mae = mean_absolute_error(y_test, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
-    maxae = np.amax(absdiff)
-    rp = pearsonr(y_test, y_pred)[0]
-
-    y_pred = regressor.predict(X_train) 
-    
-    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
-    maetrain = mean_absolute_error(y_train, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
-    maxaetrain = np.amax(absdiff)
-    rptrain = pearsonr(y_train, y_pred)[0]
-
-    train_score = regressor.score(X_train,y_train)
-    score = regressor.score(X_test, y_test)
-
-    return (rms, mae, maxae, rp, score), \
-            (rmstrain, maetrain, maxaetrain, rptrain, train_score), \
-            regressor
-
-#####################################################################
-
-def lr_split_build_and_test (features_array, labels):
-
-    X_train, X_test, y_train, y_test = train_test_split( \
-            features_array, labels, test_size=LEAVEPERC)
-    
-    regressor = LinearRegression()
-      
-    # fit the regressor with X and Y data 
-    regressor.fit(X_train, y_train) 
-    
-    y_pred = regressor.predict(X_test) 
-    
-    rms = math.sqrt(mean_squared_error(y_test, y_pred))
-    mae = mean_absolute_error(y_test, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
-    maxae = np.amax(absdiff)
-    rp = pearsonr(y_test, y_pred)[0]
-
-    y_pred = regressor.predict(X_train) 
-    
-    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
-    maetrain = mean_absolute_error(y_train, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
-    maxaetrain = np.amax(absdiff)
-    rptrain = pearsonr(y_train, y_pred)[0]
-
-    train_score = regressor.score(X_train,y_train)
-    score = regressor.score(X_test, y_test)
-
-    return (rms, mae, maxae, rp, score), \
-            (rmstrain, maetrain, maxaetrain, rptrain, train_score), \
-            regressor
-
-#####################################################################
-
-def rf_split_build_and_test (features_array, labels, \
-        numofdecisiontree = 10):
-
-    X_train, X_test, y_train, y_test = train_test_split( \
-            features_array, labels, test_size=LEAVEPERC)
-    
-    regressor = RandomForestRegressor(n_estimators = numofdecisiontree, \
-              random_state = 42)
-      
-    # fit the regressor with X and Y data 
-    regressor.fit(X_train, y_train) 
-    
-    y_pred = regressor.predict(X_test) 
-    
-    rms = math.sqrt(mean_squared_error(y_test, y_pred))
-    mae = mean_absolute_error(y_test, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
-    maxae = np.amax(absdiff)
-    rp = pearsonr(y_test, y_pred)[0]
-
-    y_pred = regressor.predict(X_train) 
-    
-    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
-    maetrain = mean_absolute_error(y_train, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
-    maxaetrain = np.amax(absdiff)
-    rptrain = pearsonr(y_train, y_pred)[0]
-
-    train_score = regressor.score(X_train,y_train)
-    score = regressor.score(X_test, y_test)
-
-    return (rms, mae, maxae, rp, score), \
-            (rmstrain, maetrain, maxaetrain, rptrain, train_score), \
-            regressor
-
-#####################################################################
-
-def rt_split_build_and_test (features_array, labels):
-
-    X_train, X_test, y_train, y_test = train_test_split( \
-            features_array, labels, test_size=LEAVEPERC)
-    
-    #regressor = DecisionTreeRegressor(random_state = 0)  
-    regressor = DecisionTreeRegressor()
-      
-    # fit the regressor with X and Y data 
-    regressor.fit(X_train, y_train) 
-    
-    y_pred = regressor.predict(X_test) 
-    
-    rms = math.sqrt(mean_squared_error(y_test, y_pred))
-    mae = mean_absolute_error(y_test, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
-    maxae = np.amax(absdiff)
-    rp = pearsonr(y_test, y_pred)[0]
-
-    y_pred = regressor.predict(X_train) 
-    
-    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
-    maetrain = mean_absolute_error(y_train, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
-    maxaetrain = np.amax(absdiff)
-    rptrain = pearsonr(y_train, y_pred)[0]
-
-    train_score = regressor.score(X_train,y_train)
-    score = regressor.score(X_test, y_test)
-
-    return (rms, mae, maxae, rp, score), \
-            (rmstrain, maetrain, maxaetrain, rptrain, train_score), \
-            regressor
-
-#####################################################################
-
-def krr_split_build_and_test (features_array, labels, \
-        alphain = 1.0, gammain = 1.0):
-
-    X_train, X_test, y_train, y_test = train_test_split( \
-            features_array, labels, test_size=LEAVEPERC)
-
-    clf = KernelRidge(alpha = alphain, kernel='rbf', gamma = gammain)
-    #clf = KernelRidge(kernel='linear', gamma=3.0e-4)
-    #print(val_features.shape, val_labels.shape)
-
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-
-    #regressor = DecisionTreeRegressor(random_state = 0)  
-    regressor = DecisionTreeRegressor()
-      
-    # fit the regressor with X and Y data 
-    regressor.fit(X_train, y_train) 
-    
-    y_pred = regressor.predict(X_test) 
-    
-    rms = math.sqrt(mean_squared_error(y_test, y_pred))
-    mae = mean_absolute_error(y_test, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_test, y_pred)]
-    maxae = np.amax(absdiff)
-    rp = pearsonr(y_test, y_pred)[0]
-
-    y_pred = regressor.predict(X_train) 
-    
-    rmstrain = math.sqrt(mean_squared_error(y_train, y_pred))
-    maetrain = mean_absolute_error(y_train, y_pred)
-    absdiff = [abs(x - y) for x, y in zip(y_train, y_pred)]
-    maxaetrain = np.amax(absdiff)
-    rptrain = pearsonr(y_train, y_pred)[0]
-
-    train_score = regressor.score(X_train,y_train)
-    score = regressor.score(X_test, y_test)
-
-    return (rms, mae, maxae, rp, score), \
-            (rmstrain, maetrain, maxaetrain, rptrain, train_score), \
-            regressor
 
 #####################################################################
 
@@ -238,6 +40,8 @@ def krr_param_selection(x, y, nfolds):
 #####################################################################
 
 if __name__== "__main__":
+
+    util.LEAVEPERC = 0.15
     
     filename = ""
     method = 0
@@ -327,23 +131,23 @@ if __name__== "__main__":
 
             if method == 1:
                 test, train, regressor = \
-                    rt_split_build_and_test (features_array, labels)
+                    util.rt_split_build_and_test (features_array, labels)
             elif method == 2:
                 test, train, regressor = \
-                    krr_split_build_and_test (features_array, labels, \
+                    util.krr_split_build_and_test (features_array, labels, \
                     params["alpha"], params["gamma"])
             elif method == 3:
                 test, train, regressor = \
-                        rf_split_build_and_test (features_array, labels, 
+                        util.rf_split_build_and_test (features_array, labels, 
                            20)
 
                 print(regressor.feature_importances_)
             elif method == 4:
                 test, train, regressor = \
-                        lr_split_build_and_test (features_array, labels)
+                        util.lr_split_build_and_test (features_array, labels)
             elif method == 5:
                 test, train, regressor = \
-                        rr_split_build_and_test (features_array, labels)
+                        util.rr_split_build_and_test (features_array, labels)
 
             mean_rms += test[0] 
             mean_mae += test[1]
@@ -370,7 +174,7 @@ if __name__== "__main__":
         print ("Mean score train: %10.5f"%(mean_score_train/float(num_of_run)) )
 
         X_train, X_test, y_train, y_test = train_test_split( \
-             features_array, labels, test_size=LEAVEPERC)
+             features_array, labels, test_size=util.LEAVEPERC)
  
         for a in [0.001, 0.01, 0.1, 1.0]:
             regressor = Lasso(alpha=a, max_iter=10e5)

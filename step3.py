@@ -109,14 +109,15 @@ if __name__== "__main__":
         print ("Features selection using ", features_array.shape[0], \
                 " observations and ", features_array.shape[1], " features ")
 
-        #pca = PCA()
-        #principalComponents = pca.fit_transform(features_array)
+        pca = PCA()
+        principalComponents = pca.fit_transform(features_array)
 
-        #plt.figure()
-        #plt.plot(np.cumsum(pca.explained_variance_ratio_))
-        #plt.xlabel('Number of Components')
-        #plt.ylabel('Variance (%)') #for each component
+        plt.figure()
+        plt.plot(np.cumsum(pca.explained_variance_ratio_))
+        plt.xlabel('Number of Components')
+        plt.ylabel('Variance (%)') #for each component
         #plt.show()
+        plt.savefig('pcavariance.pdf')
 
         pca = PCA(0.95)
         principalComponents = pca.fit_transform(features_array)
@@ -146,4 +147,60 @@ if __name__== "__main__":
         for v in selectedvariables.keys():
             print("  %30s ==> %5d"%(v, selectedvariables[v]))
         print("")
+
+        pca = PCA(n_components=N)
+        features = pca.fit_transform(features_array)
+
+        num_of_run = 100
+
+        for numoftrees in [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 30, 40, 100]:
+
+            mean_rms = 0.0
+            mean_mae = 0.0
+            mean_maxae = 0.0
+            mean_rp = 0.0
+            mean_score = 0.0
+            
+            mean_rms_train = 0.0
+            mean_mae_train = 0.0
+            mean_maxae_train = 0.0
+            mean_rp_train = 0.0
+            mean_score_train = 0.0
+
+            print("Using %4d num. of tress"%numoftrees)
+            for i in range(num_of_run):
+            
+                test = None
+                train = None
+                regressor = None
+            
+                #test, train, regressor = \
+                #           util.lr_split_build_and_test (features, labels)
+            
+                test, train, regressor = \
+                           util.rf_split_build_and_test (features_array, labels, 
+                               numoftrees)
+            
+                mean_rms += test[0] 
+                mean_mae += test[1]
+                mean_maxae += test[2]
+                mean_rp += test[3]
+                mean_score += test[4]
+               
+                mean_rms_train += train[0] 
+                mean_mae_train += train[1]
+                mean_maxae_train += train[2]
+                mean_rp_train += train[3]
+                mean_score_train += train[4]
+
+            print ("Mean  RMSE: %10.5f train: %10.5f "%((mean_rms/float(num_of_run)), \
+                    (mean_rms_train/float(num_of_run)) ))
+            print ("Mean   MAE: %10.5f train: %10.5f "%((mean_mae/float(num_of_run)), \
+                    (mean_mae_train/float(num_of_run)) ))
+            print ("Mean MaxAE: %10.5f train: %10.5f "%((mean_maxae/float(num_of_run)), \
+                    (mean_maxae_train/float(num_of_run)) ))
+            print ("Mean    rP: %10.5f train: %10.5f "%((mean_rp/float(num_of_run)), \
+                    (mean_rp_train/float(num_of_run)) ))
+            print ("Mean score: %10.5f train: %10.5f "%((mean_score/float(num_of_run)), \
+                    (mean_score_train/float(num_of_run)) ))
 
