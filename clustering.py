@@ -80,7 +80,6 @@ if __name__== "__main__":
             if abs(P) > 0.5 or abs(S) > 0.5:
                 print ("\"",k, "\" vs ", labelname, " corr P and S: , ", P, " , ", S)
 
-        
         features_array = np.zeros((len(labels), len(features.keys())))
 
         i = 0
@@ -89,6 +88,7 @@ if __name__== "__main__":
             i = i + 1
 
         # elbow method to select optmial number of cluster 
+        #features_array = StandardScaler().fit_transform(features_array)
 
         print ("Start KMeans...")
 
