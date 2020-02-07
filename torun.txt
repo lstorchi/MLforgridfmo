@@ -1,0 +1,12 @@
+python selectionPCAandModel.py -f Merged.xlsx -m 1
+
+#selcted subset 
+python selectionPCAandModel.py -f Merged.xlsx -m 1 -F "Etot;Pocket charge;Pocket pos. char.;Pocket neg. char.;LogP;PvsL 5 A nomalized;LvsP 5 A nomalized;FvsF 5 A nomalized;Ligand rotors
+;Ligand charge"
+
+# only grid subset
+python selectionPCAandModel.py -f Merged.xlsx -m 1 -F "5 A num of points PvsL;Energy 5 A PvsL;PvsL 5 A nomalized;5 A num of points LvsP;Energy 5 A LvsP;LvsP 5 A nomalized;5 A num of points FvsF;Energy 5 A FvsF;FvsF 5 A nomalized;5 A num of points FvsF in Box;Energy 5 A FvsF in Box;FvsF 5 A nomalized in a box"
+
+# only FMO subset
+python selectionPCAandModel.py -f Merged.xlsx -m 1 -F "Etot;Ees;Eex;Ect+mix;Edisp;Gsol"
+
